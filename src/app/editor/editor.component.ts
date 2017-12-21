@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Article, ArticlesService } from '../shared';
+import { Article, ArticlesService, TagsService } from '../shared';
 
 @Component({
   selector: 'editor-page',
@@ -14,9 +14,11 @@ export class EditorComponent implements OnInit {
   tagField = new FormControl();
   errors: Object = {};
   isSubmitting = false;
-
+  tags: Array<string> = [];
+  tagsLoaded = false;
   constructor(
     private articlesService: ArticlesService,
+    private tagsService: TagsService,
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder
@@ -41,6 +43,12 @@ export class EditorComponent implements OnInit {
         }
       }
     );
+
+    this.tagsService.getAll()
+    .subscribe(tags => {
+      this.tags = tags;
+      this.tagsLoaded = true;
+    });
   }
 
   addTag() {
@@ -54,6 +62,10 @@ export class EditorComponent implements OnInit {
     this.tagField.reset('');
   }
 
+  takeTag(type: Object) {
+    this.tagField.value.add(type);
+  }
+
   removeTag(tagName: string) {
     this.article.tagList = this.article.tagList.filter((tag) => tag !== tagName);
   }
@@ -63,7 +75,7 @@ export class EditorComponent implements OnInit {
 
     // update the model
     this.updateArticle(this.articleForm.value);
-
+    this.addTag();
     // post the changes
     this.articlesService
     .save(this.article)

@@ -33,17 +33,18 @@
             <fieldset class="form-group">
               <input class="form-control"
                 type="text"
-                placeholder="Enter tags"
+                placeholder="Enter activity"
                 [formControl]="tagField"
                 (keyup.enter)="addTag()" />
 
-              <div class="tag-list">
-                <span *ngFor="let tag of article.tagList"
-                  class="tag-default tag-pill">
-                  <i class="ion-close-round" (click)="removeTag(tag)"></i>
-                  {{ tag }}
-                </span>
-              </div>
+                <div class="tag-list">
+                  <a href="#"
+                     *ngFor="let tag of tags"
+                     (click)="takeTag({tag: tag})"
+                     class="tag-default tag-pill">
+                     {{ tag }}
+                  </a>
+                </div>
             </fieldset>
 
             <button class="btn btn-lg pull-xs-right btn-primary" type="button" (click)="submitForm()">
